@@ -60,15 +60,11 @@ class GPSService : Service() {
                     withContext(Dispatchers.Main) {
                         updateNotification("Coord: ${result.lon}, ${result.lat}")
                     }
-                } catch (e: Exception) {
-                    Log.e("MockLocationService", "Error in getCellInfo() or updating notification", e)
+                } catch (e: Exception) { 
+                    msg = "Error(exception caught): name:${e::class.simpleName} msg:${e.message}"
+                    Log.e("MockLocationService", msg )
                     withContext(Dispatchers.Main) {
-                        status.value = when {
-                            e is IOException || e is UnresolvedAddressException -> "Network error"
-                            e is ClientRequestException && e.response.status == HttpStatusCode.NotFound ->
-                                "Location not found"
-                            else -> "Error: ${e.message}"
-                        }
+                        status.value =  "${msg}"
                         updateNotification(status.value)
                     }
                 }
